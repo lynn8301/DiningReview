@@ -20,41 +20,40 @@ import java.util.Optional;
 @RestController
 public class UserController {
     @Autowired
-    UserRepository userRository;
+    UserRepository userRepository;
 
     @GetMapping("/users")
     public Iterable<User> getAllUsers() {
-        return userRository.findAll();
+        return userRepository.findAll();
     }
 
     @PostMapping
     public User createUser(@RequestBody User newUser) {
-        return userRository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     @GetMapping("/users/{userName}")
     public Optional<User> getUserByName(@PathVariable("userName") String userName) {
-        Optional<User> userOptional = userRository.findByUserName(userName);
+        Optional<User> userOptional = userRepository.findByUserName(userName);
         if(userOptional.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist.");
         }
 
-        return userRository.findByUserName(userName);
+        return userRepository.findByUserName(userName);
     }
     
-    @PutMapping("/users/{userNmae}")
+    @PutMapping("/users/{userName}")
     public User updateUser(@PathVariable("userName") String userName, @RequestBody User userChange) {
-        User user = userRository.findByUserName(userName)
+        User user = userRepository.findByUserName(userName)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "This use does not exist"));
         
         user.setCity(userChange.getCity());
         user.setState(userChange.getState());
-        user.setZipCode(userName);
         user.setZipCode(userChange.getZipCode());
         user.setPeanutAllergy(userChange.isPeanutAllergy());
         user.setEggAllergy(userChange.isEggAllergy());
         user.setDairyAllergy(userChange.isDairyAllergy());
         
-        return userRository.save(user);
+        return userRepository.save(user);
     }
 }
